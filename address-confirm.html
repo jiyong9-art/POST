@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>우편 반송 — 주소 확인 | 에이원코리아</title>
+<meta name="theme-color" content="#003A84">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="assets/post.css">
+</head>
+<body>
+<div class="pub">
+  <div class="brand">
+    <div class="mark" aria-hidden="true">A1</div>
+    <b>A1KOREA</b>
+    <span class="sub">에이원코리아</span>
+  </div>
+
+  <div id="app-card" class="card">
+    <div id="loading"><p class="mute">불러오는 중…</p></div>
+
+    <!-- ① 본인 확인 -->
+    <section id="step1" class="step-hide" aria-labelledby="t1">
+      <h1 id="t1">보내 드린 우편이 돌아왔습니다</h1>
+      <p class="lead">보험 서류를 다시 보내 드리려면 바른 주소가 필요합니다. 본인 확인 뒤 주소를 넣어 주세요.</p>
+      <form id="fVerify" autocomplete="off" style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+        <label class="lbl" for="idv" id="idvLabel">생년월일 6자리 (법인은 사업자번호 10자리)</label>
+        <input class="inp" id="idv" inputmode="numeric" maxlength="12" placeholder="예: 800101" required aria-describedby="verifyHint">
+        <p class="hint" id="verifyHint">본인 확인용으로만 씁니다. 5번 틀리면 30분 동안 잠깁니다.</p>
+        <div class="err" id="verifyErr" role="alert"></div>
+        <button class="btn primary lg block" type="submit">확인</button>
+      </form>
+      <p class="foot">확인이 어려우면 담당자에게 전화로 알려 주세요.<br>카드번호·비밀번호는 절대 묻지 않습니다.</p>
+    </section>
+
+    <!-- ② 주소 -->
+    <section id="step2" class="step-hide" aria-labelledby="t2">
+      <h1 id="t2">주소를 확인해 주세요</h1>
+      <p class="lead" id="whoLine"></p>
+
+      <div class="kbox" style="margin-top:14px">
+        <div class="hint">보낸 주소 · <span id="reasonTxt"></span></div>
+        <div class="small" id="sentAddr" style="font-weight:600;word-break:keep-all"></div>
+      </div>
+
+      <div class="seg" role="group" aria-label="주소 확인 방법" style="margin-top:16px;width:100%">
+        <button type="button" id="tabFix" aria-pressed="true" style="flex:1">주소를 고칠게요</button>
+        <button type="button" id="tabSame" aria-pressed="false" style="flex:1">위 주소가 맞아요</button>
+      </div>
+
+      <div id="sameBox" class="step-hide" style="margin-top:16px">
+        <div class="callout info"><div>같은 주소로 다시 보내 드립니다. 우편이 돌아온 이유가 주소가 아니라면 담당자에게 전화로 알려 주세요.</div></div>
+        <button class="btn primary lg block" id="btnSame" style="margin-top:12px">이 주소로 다시 받기</button>
+      </div>
+
+      <form id="fAddr" autocomplete="off" style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+        <label class="lbl" for="zip">우편번호</label>
+        <div style="display:flex;gap:8px">
+          <input class="inp" id="zip" inputmode="numeric" maxlength="5" placeholder="5자리" style="flex:1" aria-label="우편번호">
+          <button class="btn soft" type="button" id="btnFind" style="flex:none">주소 찾기</button>
+        </div>
+        <label class="lbl" for="road">도로명 주소</label>
+        <input class="inp" id="road" placeholder="예: 경기 부천시 평천로 655" aria-label="도로명 주소">
+        <label class="lbl" for="detail">상세주소 (동·호수, 층)</label>
+        <input class="inp" id="detail" placeholder="예: 105동 402호" aria-label="상세주소">
+        <label class="small" style="display:flex;gap:8px;align-items:center;min-height:32px">
+          <input type="checkbox" id="noDetail" style="width:20px;height:20px"> 상세주소 없음 (단독주택 등)
+        </label>
+        <p class="hint">아파트·빌라·상가는 동·호수까지 꼭 넣어 주세요 — 우편이 돌아오는 가장 흔한 이유입니다.</p>
+        <div class="err" id="addrErr" role="alert"></div>
+        <button class="btn primary lg block" type="submit">이 주소로 다시 받기</button>
+      </form>
+
+      <div id="postcodeLayer" style="display:none;height:430px;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:10px"></div>
+      <p class="foot">넣으신 주소는 보험 서류 발송과 보험사 주소 변경에만 씁니다.</p>
+    </section>
+
+    <!-- ③ 끝 -->
+    <section id="step3" class="step-hide" aria-labelledby="t3">
+      <div style="text-align:center;margin-bottom:6px">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--good-soft);color:var(--good);display:grid;place-items:center;margin:0 auto 10px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></svg>
+        </div>
+        <h1 id="t3">고맙습니다</h1>
+      </div>
+      <p class="lead" id="doneMsg" style="white-space:pre-line"></p>
+      <div class="callout info" style="margin-top:14px"><div>바뀐 주소는 보험사에도 알리도록 업무팀에 전달했습니다. 증권은 고객 자료실에서도 바로 받으실 수 있습니다.</div></div>
+      <div id="doneFiles" style="margin-top:12px;display:flex;flex-direction:column;gap:8px"></div>
+      <p class="foot">궁금한 점은 담당자에게 연락해 주세요.</p>
+    </section>
+
+    <!-- 오류 -->
+    <section id="stepErr" class="step-hide">
+      <h1 id="errTitle">열 수 없습니다</h1>
+      <p class="lead" id="errMsg"></p>
+      <p class="foot">담당자에게 전화로 알려 주시면 도와드리겠습니다.</p>
+      <a class="btn block" href="./index.html">돌아가기</a>
+    </section>
+  </div>
+  <p class="foot">에이원코리아 · 보험 서류 발송 안내<br>이 페이지는 주소 확인에만 쓰이며 카드번호·비밀번호를 묻지 않습니다.</p>
+</div>
+
+<script src="assets/config.js"></script>
+<script src="assets/demo-seed.js"></script>
+<script src="assets/store.js"></script>
+<script src="assets/api.js"></script>
+<script>
+(function () {
+  'use strict';
+  var api = window.PostAPI;
+  var cfg = window.A1POST_CONFIG || {};
+  var q = new URL(location.href).searchParams;
+  var P = { r: q.get('r') || '', exp: q.get('exp') || '', sig: q.get('sig') || '', idv: '' };
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var labels = { 개인: '생년월일 6자리', 법인: '사업자번호 10자리' };
+
+  function show(id) {
+    ['loading', 'step1', 'step2', 'step3', 'stepErr'].forEach(function (x) {
+      var el = document.getElementById(x);
+      if (!el) return;
+      el.classList.toggle('step-hide', x !== id);
+    });
+  }
+  function fail(title, msg) {
+    $('#errTitle').textContent = title;
+    $('#errMsg').textContent = msg || '';
+    show('stepErr');
+  }
+
+  /* 처음 상태 */
+  async function init() {
+    if (!P.r) return fail('주소 확인 링크가 아닙니다', '문자로 받은 링크를 다시 눌러 주세요.');
+    try {
+      var info = await api.linkInfo(P);
+      if (!info || info.ok === false) return fail(info && info.locked ? '잠시 잠겼습니다' : '열 수 없습니다', (info && info.why) || '링크가 만료되었거나 잘못된 주소입니다.');
+      if (info.done) return fail('이미 처리되었습니다', '새 주소로 다시 보내 드렸습니다.');
+      if (info.kind === '법인') $('#idvLabel').textContent = '사업자번호 10자리';
+      if (info.name) $('#whoLine').textContent = info.name + ' 님, 아래 주소로 우편을 보냈는데 돌아왔습니다.';
+      show('step1');
+      $('#idv').focus();
+    } catch (e) {
+      fail('열 수 없습니다', e.message || '잠시 후 다시 시도해 주세요.');
+    }
+  }
+
+  /* ① 본인 확인 */
+  $('#fVerify').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    $('#verifyErr').textContent = '';
+    P.idv = $('#idv').value;
+    if (!P.idv.replace(/\D/g, '')) { $('#verifyErr').textContent = '생년월일(사업자번호)을 넣어 주세요'; return; }
+    var btn = ev.target.querySelector('button');
+    btn.disabled = true;
+    try {
+      var r = await api.verify(P);
+      if (!r.ok) { $('#verifyErr').textContent = r.why || '맞지 않습니다'; if (r.locked) fail('잠시 잠겼습니다', r.why); return; }
+      $('#sentAddr').textContent = r.sent || '(보낸 주소 기록 없음)';
+      $('#reasonTxt').textContent = r.reason || '반송';
+      if (r.same_ok === false) {
+        $('#tabSame').style.display = 'none';
+        $('#tabFix').setAttribute('aria-pressed', 'true');
+      }
+      show('step2');
+    } catch (e) {
+      $('#verifyErr').textContent = e.message || '잠시 후 다시 시도해 주세요';
+    } finally { btn.disabled = false; }
+  });
+
+  /* ② 주소 */
+  function setTab(fix) {
+    $('#tabFix').setAttribute('aria-pressed', String(fix));
+    $('#tabSame').setAttribute('aria-pressed', String(!fix));
+    $('#fAddr').classList.toggle('step-hide', !fix);
+    $('#sameBox').classList.toggle('step-hide', fix);
+  }
+  $('#tabFix').addEventListener('click', function () { setTab(true); });
+  $('#tabSame').addEventListener('click', function () { setTab(false); });
+  $('#noDetail').addEventListener('change', function () {
+    $('#detail').disabled = this.checked;
+    if (this.checked) $('#detail').value = '';
+  });
+
+  var posted = false;
+  function loadPostcode(done) {
+    if (window.daum && window.daum.Postcode) return done();
+    posted = true;
+    var s = document.createElement('script');
+    s.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+    s.onload = done;
+    s.onerror = function () { $('#addrErr').textContent = '주소 찾기를 불러오지 못했습니다 — 우편번호와 주소를 직접 넣어 주세요'; };
+    document.head.appendChild(s);
+  }
+  $('#btnFind').addEventListener('click', function () {
+    loadPostcode(function () {
+      var layer = $('#postcodeLayer');
+      layer.style.display = 'block';
+      new window.daum.Postcode({
+        width: '100%', height: '100%',
+        oncomplete: function (d) {
+          var a = d.roadAddress || d.jibunAddress || d.address;
+          var extra = [d.bname && /[동로가]$/.test(d.bname) ? d.bname : '', d.buildingName && d.apartment === 'Y' ? d.buildingName : ''].filter(Boolean).join(', ');
+          if (extra) a += ' (' + extra + ')';
+          $('#zip').value = d.zonecode;
+          $('#road').value = a;
+          layer.style.display = 'none';
+          $('#detail').focus();
+        }
+      }).embed(layer);
+    });
+  });
+
+  async function submitAddr(body) {
+    $('#addrErr').textContent = '';
+    try {
+      var r = await api.saveAddrCustomer(P, body);
+      if (!r.ok) { $('#addrErr').textContent = r.why || '저장하지 못했습니다'; return; }
+      $('#doneMsg').textContent = r.msg || '새 주소로 다시 보내 드리겠습니다.';
+      var files = r.files || [];
+      $('#doneFiles').innerHTML = files.map(function (f) {
+        return '<div class="doc"><span>' + esc(f.kind) + '</span><a class="btn sm" href="' + esc(f.url) + '">받기</a></div>';
+      }).join('');
+      show('step3');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+      $('#addrErr').textContent = e.message || '잠시 후 다시 시도해 주세요';
+    }
+  }
+
+  $('#fAddr').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var zip = $('#zip').value.trim(), road = $('#road').value.trim(), detail = $('#detail').value.trim();
+    if (!/^\d{5}$/.test(zip.replace(/\D/g, ''))) { $('#addrErr').textContent = '우편번호 5자리를 넣어 주세요'; return; }
+    if (road.length < 5) { $('#addrErr').textContent = '주소를 넣어 주세요'; return; }
+    if (!detail && !$('#noDetail').checked) { $('#addrErr').textContent = '상세주소를 넣어 주거나 "상세주소 없음"을 눌러 주세요'; return; }
+    submitAddr({ zip: zip, addr1: road, addr2: detail, noDetail: $('#noDetail').checked });
+  });
+  $('#btnSame').addEventListener('click', function () { submitAddr({ same: true }); });
+
+  init();
+})();
+</script>
+</body>
+</html>
